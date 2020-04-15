@@ -1,0 +1,146 @@
+<html>
+<head>
+<title>Morse decoder on ARDUINO</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<header>
+	<nav>
+		<div class="sec1" id="section1">
+		</div>
+		<ul class="main-nav">
+			<li class="sec1"> <a href="#section1"> HOME </a> </li>
+			<li class="sec2"> <a href="#section2"> P R E S E N T A T I O N  </a> </li>
+			<li class="sec3"> <a href="#section3"> S C H E M A T I C S </a> </li>
+			<li class="sec4"> <a href="#section4"> R U N N I N G </a> </li>
+			<li class="sec5"> <a href="#section5"> C O D E </a> </li>
+		</ul>
+		</header>
+	</nav>
+
+	<div class="sec1" id="section1">
+	</div>
+
+	<div class="sec2" id="section2">
+		<h1> P R E S E N T A T I O N <br><br> Arduino Morse Decoder <br> Internet Of Things <br> Moldovan Andrada, 821</h1>
+		<P> This Arduino Morse decoder has a button that captures letters/words/sentences in the Morse format by being pressed as specified in the instructions. When the button is pushed, a LED will signal the action. This input is received, translated into English and outputed to the user in the Serial Monitor inside the Arduino Application. </P>
+				<img src="Screenshot_1.png" alt="pozamea" style="display: block; margin-left: auto; margin-right: auto;">
+				<p> Morse code is a method used in telecommunication to encode text characters as standardized sequences of two different signal durations, called dots and dashes or dits and dahs. Morse code is named for Samuel Morse, an inventor of the telegraph. </p>
+
+
+	</div>
+
+	<div class="sec3" id="section3">
+		<h1> S C H E M A T I C S </h1>
+		<img src="pozamea.jpg" alt="pozamea" style="display: block; margin-left: auto; margin-right: auto;">
+		<div id="descriere">
+			<p> For the implementation of this project I used:<br>
+				-	An Arduino Uno microcontroller<br>
+				-	A BreadBoard<br>
+				-	A Push Button<br>
+				-	A 220 Ω resistence<br>
+				-	4 Tata – Tata wires <br>
+				<br>
+				Schema:<br>
+			</p>
+		</div>
+		<img src="schema.png" alt="schema" style="display: block; margin-left: auto; margin-right: auto;">
+		<p></p>
+		<img src="schema2.png" alt="schema2" style="display: block; margin-left: auto; margin-right: auto;">
+
+
+	</div>
+
+	<div class="sec4" id="section4">
+		<h1> R U N N I N G </h1>
+		<p>
+			Mod de utilizare:<br> <br>
+1.	Connect the components as in the schema below.<br>
+2.	Connect the Arduino Uno board to your laptop using the USB port.<br>
+3.	Install Arduino Agent version 1.1.101-318de37 such that the Arduino Software will recognize the microcontroller.<br>
+4.	Write the programming code in Arduino Editor ( website: https://create.arduino.cc/editor ), save the sketch, then rn the program.<br>
+5.	Using the push-button, input the signals that are going to be decoded as the schema shows.<br>
+
+
+		</p>
+	</div>
+
+	<div class="sec5" id="section5">
+		<h1> C O D E  </h1>
+
+		<p style="margin: 20px; text-align:left"> 
+			unsigned long signal_len, t1, t2; <br>
+int inputPin = 2;<br>
+int ledPin = 4;<br>
+String code = "";<br>
+void setup() {<br>
+  Serial.begin(9600);<br>
+  pinMode(inputPin, INPUT_PULLUP); <br>
+  pinMode(ledPin, OUTPUT);<br>
+}
+char readio() {<br>
+  if (signal_len < 600 && signal_len > 50)<br>
+  { return '.'; //if button press less than 0.6sec, it is a dot<br>
+  }   else if (signal_len > 600)   {<br>
+    return '-';                        <br>
+  }<br>
+<br>
+}<br>
+void convertor() {<br>
+  static String letters[] = {".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..", "--", "-.", "---", ".--.", <br>"--.-",                              ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--..", "E"                             };<br>
+  int i = 0;   if (code == ".-.-.-")   {<br>
+    Serial.print(".");        <br>
+  }<br>
+  else   {<br>
+    while (letters[i] != "E")  <br>
+    {<br>
+      if (letters[i] == code)       {<br>
+        Serial.print(char('A' + i));<br>
+        break;<br>
+<br>
+      }<br>
+      i++;<br>
+<br>
+    }<br>
+    if (letters[i] == "E")     {<br><br>
+      Serial.println("");  <br>
+    }<br>
+<br>
+  }<br>
+  code = "";        <br>                    
+}<br>
+void loop() {<br>
+NextDotDash:<br>
+  while (digitalRead(inputPin) == HIGH) {}<br>
+  t1 = millis();                            <br>
+  digitalWrite(ledPin, HIGH);               <br>
+  while (digitalRead(inputPin) == LOW) {}<br>
+  t2 = millis();                            <br>
+  digitalWrite(ledPin, LOW);               <br>
+  signal_len = t2 - t1;                    <br>
+  if (signal_len > 50)                     <br>
+  {<br>
+    code += readio();                       <br>
+  }<br>
+  while ((millis() - t2) < 500)           <br>
+  {<br>
+    if (digitalRead(inputPin) == LOW)     {<br>
+      goto NextDotDash;<br>
+<br>
+    }<br>
+<br>
+  }<br>
+  convertor();<br>
+<br>
+}<br>
+
+
+		</p>
+	</div>
+
+
+</body>
+
+</html>
